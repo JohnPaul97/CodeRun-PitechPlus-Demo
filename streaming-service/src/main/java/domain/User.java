@@ -1,6 +1,7 @@
 package domain;
 
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class User {
 
@@ -9,13 +10,38 @@ public class User {
     private UserType userType;
     private Map<Film, Integer> filmsWatched;
 
-    public void watchFilm(final Film film, final Integer timeSpent) {
-        //TODO: keep track of the user's time spent on a certain film
+    public User(final String username, final int age, final UserType userType) {
+        this.username = username;
+        this.age = age;
+        this.userType = userType;
+        this.filmsWatched = new HashMap<>();
     }
 
-    public boolean hasFullyWatchFilm(final Film film) {
-        //TODO: check if the user has watched the whole film
-        return false;
+    public Map<Film, Integer> getFilmsWatched() {
+        return filmsWatched;
+    }
+
+    public void setFilmsWatched(Map<Film, Integer> filmsWatched) {
+        this.filmsWatched = filmsWatched;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void watchFilm(final Film film, final Integer timeSpent) {
+        if (timeSpent < 0 || timeSpent > film.getLength()) {
+            return;
+        }
+        this.filmsWatched.put(film, timeSpent);
+    }
+
+    public List<Film> getListOfFullyWatchedFilms() {
+        return this.filmsWatched.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().getLength() == entry.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public double getPaymentPlanValue() {
