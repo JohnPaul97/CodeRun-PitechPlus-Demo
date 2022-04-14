@@ -8,9 +8,15 @@ public class StreamingService {
     private List<Film> filmLibrary;
     private List<User> users;
 
+    public StreamingService(List<Film> filmLibrary, List<User> users) {
+        this.filmLibrary = filmLibrary;
+        this.users = users;
+    }
+
     public double getPlatformRevenue() {
-        //TODO: retrieve the total value that the company earns
-        return 0;
+        return this.users.stream()
+                .map(User::getPaymentPlanValue)
+                .reduce(0.0, Double::sum);
     }
 
     public double getDiscountImpact(final int discountPercentage, final UserType userType) {
